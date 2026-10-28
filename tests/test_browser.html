@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,12 +13,14 @@
       padding: 30px;
       line-height: 1.6;
     }
+
     h1 {
       background: linear-gradient(90deg, #c77dff, #ff6b9d, #fcb045);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-bottom: 8px;
     }
+
     .summary {
       font-size: 1.1rem;
       margin-bottom: 20px;
@@ -26,6 +29,7 @@
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
+
     .test-suite {
       margin-bottom: 24px;
       background: rgba(255, 255, 255, 0.03);
@@ -33,12 +37,14 @@
       border-radius: 10px;
       padding: 16px;
     }
+
     .suite-title {
       font-size: 1rem;
       font-weight: 700;
       color: #c77dff;
       margin-bottom: 12px;
     }
+
     .test-row {
       display: flex;
       align-items: center;
@@ -47,7 +53,11 @@
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
       font-size: 0.9rem;
     }
-    .test-row:last-child { border-bottom: none; }
+
+    .test-row:last-child {
+      border-bottom: none;
+    }
+
     .badge {
       display: inline-block;
       padding: 2px 8px;
@@ -56,11 +66,27 @@
       font-weight: 700;
       text-transform: uppercase;
     }
-    .pass { background: rgba(46, 204, 113, 0.2); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.4); }
-    .fail { background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.4); }
-    .fail-msg { color: #e74c3c; font-size: 0.8rem; margin-left: 10px; }
+
+    .pass {
+      background: rgba(46, 204, 113, 0.2);
+      color: #2ecc71;
+      border: 1px solid rgba(46, 204, 113, 0.4);
+    }
+
+    .fail {
+      background: rgba(231, 76, 60, 0.2);
+      color: #e74c3c;
+      border: 1px solid rgba(231, 76, 60, 0.4);
+    }
+
+    .fail-msg {
+      color: #e74c3c;
+      font-size: 0.8rem;
+      margin-left: 10px;
+    }
   </style>
 </head>
+
 <body>
 
   <h1>Followback Browser Test Suite</h1>
@@ -119,7 +145,7 @@
       suitesEl.appendChild(suiteDiv);
     }
 
-    (async function() {
+    (async function () {
       // 1. Dependency checks
       await runSuite("1. Dependency & Environment", {
         "JSZip library is loaded and operational": () => {
@@ -282,7 +308,7 @@
 
           let threw = false;
           try {
-            await Parser.parseZip(file, () => {});
+            await Parser.parseZip(file, () => { });
           } catch (err) {
             threw = true;
             assert(err.message.includes("ZIP"), "Error message should mention ZIP");
@@ -301,4 +327,5 @@
     })();
   </script>
 </body>
+
 </html>

@@ -23,8 +23,8 @@ const Comparator = (() => {
     }
 
     const notFollowingBack = []; // G − F
-    const notFollowedBack  = []; // F − G
-    const mutuals          = []; // F ∩ G
+    const notFollowedBack = []; // F − G
+    const mutuals = []; // F ∩ G
 
     for (const username of followingSet) {
       if (followersSet.has(username)) {
@@ -46,9 +46,9 @@ const Comparator = (() => {
     mutuals.sort((a, b) => a.localeCompare(b));
 
     return {
-      followers:       followersSet.size,
-      following:       followingSet.size,
-      mutuals:         mutuals.length,
+      followers: followersSet.size,
+      following: followingSet.size,
+      mutuals: mutuals.length,
       notFollowingBack,     // G − F: they don't follow you back
       notFollowedBack,      // F − G: you don't follow them back
     };
@@ -71,7 +71,7 @@ const Comparator = (() => {
     for (let i = 0; i < len; i++) {
       rows.push([
         results.notFollowingBack[i] ?? "",
-        results.notFollowedBack[i]  ?? "",
+        results.notFollowedBack[i] ?? "",
       ]);
     }
 

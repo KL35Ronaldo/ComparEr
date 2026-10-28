@@ -15,7 +15,7 @@ const CONFIG = {
   // Accounts per page in results columns (0 = no pagination)
   pageSize: 100,
 
-  githubUrl: "https://github.com/YOUR_USERNAME/followback",
+  githubUrl: "https://github.com/KL35Ronaldo/CompareEr",
 };
 
 // ── Mode detection ────────────────────────────────────────────
@@ -23,10 +23,10 @@ const USE_BACKEND = Boolean(CONFIG.backendUrl && CONFIG.backendUrl.trim());
 
 // ── State ─────────────────────────────────────────────────────
 let state = {
-  processing:  false,
-  results:     null,
-  pageLeft:    0,
-  pageRight:   0,
+  processing: false,
+  results: null,
+  pageLeft: 0,
+  pageRight: 0,
   searchQuery: "",
 };
 
@@ -34,39 +34,39 @@ let state = {
 const $ = id => document.getElementById(id);
 
 const els = {
-  fileInput:          $("file-input"),
-  uploadZone:         $("upload-zone"),
-  processingSection:  $("processing-section"),
-  processingMsg:      $("processing-msg"),
-  errorSection:       $("error-section"),
-  errorHeading:       $("error-heading"),
-  errorBody:          $("error-body"),
-  errorReset:         $("error-reset"),
-  resultsSection:     $("results-section"),
-  statFollowers:      $("stat-followers"),
-  statFollowing:      $("stat-following"),
-  statMutuals:        $("stat-mutuals"),
-  statNotBack:        $("stat-not-back"),
-  statNotFollowed:    $("stat-not-followed"),
-  colLeftTitle:       $("col-left-title"),
-  colLeftCount:       $("col-left-count"),
-  colRightTitle:      $("col-right-title"),
-  colRightCount:      $("col-right-count"),
-  listLeft:           $("list-left"),
-  listRight:          $("list-right"),
-  noResultsLeft:      $("no-results-left"),
-  noResultsRight:     $("no-results-right"),
-  paginLeft:          $("pagin-left"),
-  paginRight:         $("pagin-right"),
-  searchInput:        $("search-input"),
-  btnDownload:        $("btn-download"),
-  btnReset:           $("btn-reset"),
-  btnCopyLeft:        $("btn-copy-left"),
-  btnCopyRight:       $("btn-copy-right"),
-  srLive:             $("sr-live"),
-  toast:              $("toast"),
-  instrToggle:        $("instructions-toggle"),
-  instrBody:          $("instructions-body"),
+  fileInput: $("file-input"),
+  uploadZone: $("upload-zone"),
+  processingSection: $("processing-section"),
+  processingMsg: $("processing-msg"),
+  errorSection: $("error-section"),
+  errorHeading: $("error-heading"),
+  errorBody: $("error-body"),
+  errorReset: $("error-reset"),
+  resultsSection: $("results-section"),
+  statFollowers: $("stat-followers"),
+  statFollowing: $("stat-following"),
+  statMutuals: $("stat-mutuals"),
+  statNotBack: $("stat-not-back"),
+  statNotFollowed: $("stat-not-followed"),
+  colLeftTitle: $("col-left-title"),
+  colLeftCount: $("col-left-count"),
+  colRightTitle: $("col-right-title"),
+  colRightCount: $("col-right-count"),
+  listLeft: $("list-left"),
+  listRight: $("list-right"),
+  noResultsLeft: $("no-results-left"),
+  noResultsRight: $("no-results-right"),
+  paginLeft: $("pagin-left"),
+  paginRight: $("pagin-right"),
+  searchInput: $("search-input"),
+  btnDownload: $("btn-download"),
+  btnReset: $("btn-reset"),
+  btnCopyLeft: $("btn-copy-left"),
+  btnCopyRight: $("btn-copy-right"),
+  srLive: $("sr-live"),
+  toast: $("toast"),
+  instrToggle: $("instructions-toggle"),
+  instrBody: $("instructions-body"),
 };
 
 // ── Announce to screen readers ────────────────────────────────
@@ -89,7 +89,7 @@ function showToast(msg, duration = 2800) {
 // ── Instructions accordion ─────────────────────────────────────
 function initInstructions() {
   const toggle = els.instrToggle;
-  const body   = els.instrBody;
+  const body = els.instrBody;
   if (!toggle || !body) return;
 
   toggle.addEventListener("click", () => {
@@ -100,7 +100,7 @@ function initInstructions() {
 
 // ── Upload zone ───────────────────────────────────────────────
 function initUpload() {
-  const zone  = els.uploadZone;
+  const zone = els.uploadZone;
   const input = els.fileInput;
 
   // Click / keyboard: open file picker
@@ -122,7 +122,7 @@ function initUpload() {
 
   // Drag-and-drop
   zone.addEventListener("dragenter", e => { e.preventDefault(); zone.classList.add("drag-over"); });
-  zone.addEventListener("dragover",  e => { e.preventDefault(); zone.classList.add("drag-over"); });
+  zone.addEventListener("dragover", e => { e.preventDefault(); zone.classList.add("drag-over"); });
   zone.addEventListener("dragleave", e => {
     if (!zone.contains(e.relatedTarget)) zone.classList.remove("drag-over");
   });
@@ -134,8 +134,8 @@ function initUpload() {
   });
 
   // Prevent dropping on document
-  document.addEventListener("dragover",  e => e.preventDefault());
-  document.addEventListener("drop",      e => e.preventDefault());
+  document.addEventListener("dragover", e => e.preventDefault());
+  document.addEventListener("drop", e => e.preventDefault());
 }
 
 // ── File handling orchestration ───────────────────────────────
@@ -161,8 +161,8 @@ async function handleFile(file) {
       results = await analyzeInBrowser(file);
     }
 
-    state.results  = results;
-    state.pageLeft  = 0;
+    state.results = results;
+    state.pageLeft = 0;
     state.pageRight = 0;
     state.searchQuery = "";
 
@@ -222,11 +222,11 @@ async function analyzeWithBackend(file) {
   }
 
   return {
-    followers:       data.statistics.followers,
-    following:       data.statistics.following,
-    mutuals:         data.statistics.mutuals,
+    followers: data.statistics.followers,
+    following: data.statistics.following,
+    mutuals: data.statistics.mutuals,
     notFollowingBack: data.not_following_back,
-    notFollowedBack:  data.not_followed_back,
+    notFollowedBack: data.not_followed_back,
   };
 }
 
@@ -247,7 +247,7 @@ function hideProcessing() {
 
 function showError(heading, body) {
   els.errorHeading.textContent = heading;
-  els.errorBody.textContent    = body;
+  els.errorBody.textContent = body;
   els.errorSection.classList.add("visible");
   els.uploadZone.classList.add("error-state");
 }
@@ -264,23 +264,23 @@ function hideResults() {
 // ── Render results ────────────────────────────────────────────
 function renderResults(results) {
   // Stats
-  animateNumber(els.statFollowers,   results.followers);
-  animateNumber(els.statFollowing,   results.following);
-  animateNumber(els.statMutuals,     results.mutuals);
-  animateNumber(els.statNotBack,     results.notFollowingBack.length);
+  animateNumber(els.statFollowers, results.followers);
+  animateNumber(els.statFollowing, results.following);
+  animateNumber(els.statMutuals, results.mutuals);
+  animateNumber(els.statNotBack, results.notFollowingBack.length);
   animateNumber(els.statNotFollowed, results.notFollowedBack.length);
 
   // Column headers
-  const leftCount  = results.notFollowingBack.length;
+  const leftCount = results.notFollowingBack.length;
   const rightCount = results.notFollowedBack.length;
-  els.colLeftCount.textContent  = `· ${leftCount.toLocaleString()}`;
+  els.colLeftCount.textContent = `· ${leftCount.toLocaleString()}`;
   els.colRightCount.textContent = `· ${rightCount.toLocaleString()}`;
 
   // Render lists
-  renderColumn(els.listLeft,  results.notFollowingBack, state.pageLeft);
-  renderColumn(els.listRight, results.notFollowedBack,  state.pageRight);
-  renderPagination(els.paginLeft,  results.notFollowingBack, "left");
-  renderPagination(els.paginRight, results.notFollowedBack,  "right");
+  renderColumn(els.listLeft, results.notFollowingBack, state.pageLeft);
+  renderColumn(els.listRight, results.notFollowedBack, state.pageRight);
+  renderPagination(els.paginLeft, results.notFollowingBack, "left");
+  renderPagination(els.paginRight, results.notFollowedBack, "right");
 
   els.uploadZone.classList.add("file-selected");
   els.resultsSection.classList.add("visible");
@@ -295,12 +295,12 @@ function animateNumber(el, target) {
   if (reduced) { el.textContent = target.toLocaleString(); return; }
 
   const duration = 600;
-  const start    = performance.now();
-  const from     = 0;
+  const start = performance.now();
+  const from = 0;
 
   function tick(now) {
     const progress = Math.min((now - start) / duration, 1);
-    const eased    = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+    const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
     el.textContent = Math.round(from + (target - from) * eased).toLocaleString();
     if (progress < 1) requestAnimationFrame(tick);
   }
@@ -317,7 +317,7 @@ function renderColumn(listEl, usernames, page) {
     ? usernames.filter(u => u.includes(query))
     : usernames;
 
-  const ps   = CONFIG.pageSize || 0;
+  const ps = CONFIG.pageSize || 0;
   const show = (ps > 0) ? filtered.slice(page * ps, (page + 1) * ps) : filtered;
 
   if (filtered.length === 0) {
@@ -336,9 +336,9 @@ function renderColumn(listEl, usernames, page) {
     li.className = "account-item";
 
     const a = document.createElement("a");
-    a.href   = `https://www.instagram.com/${encodeURIComponent(username)}/`;
+    a.href = `https://www.instagram.com/${encodeURIComponent(username)}/`;
     a.target = "_blank";
-    a.rel    = "noopener noreferrer";
+    a.rel = "noopener noreferrer";
     a.textContent = username; // safe: no HTML injection
 
     li.appendChild(a);
@@ -354,16 +354,16 @@ function renderPagination(paginEl, usernames, side) {
   const ps = CONFIG.pageSize || 0;
   if (ps === 0) return;
 
-  const query    = state.searchQuery.toLowerCase().trim();
+  const query = state.searchQuery.toLowerCase().trim();
   const filtered = query ? usernames.filter(u => u.includes(query)) : usernames;
-  const pages    = Math.ceil(filtered.length / ps);
+  const pages = Math.ceil(filtered.length / ps);
   if (pages <= 1) return;
 
   const currentPage = side === "left" ? state.pageLeft : state.pageRight;
 
   for (let i = 0; i < pages; i++) {
     const btn = document.createElement("button");
-    btn.className  = "page-btn" + (i === currentPage ? " active" : "");
+    btn.className = "page-btn" + (i === currentPage ? " active" : "");
     btn.textContent = i + 1;
     btn.setAttribute("aria-label", `Page ${i + 1}`);
     btn.addEventListener("click", () => {
@@ -386,12 +386,12 @@ function initSearch() {
   els.searchInput.addEventListener("input", () => {
     if (!state.results) return;
     state.searchQuery = els.searchInput.value;
-    state.pageLeft  = 0;
+    state.pageLeft = 0;
     state.pageRight = 0;
-    renderColumn(els.listLeft,  state.results.notFollowingBack, 0);
-    renderColumn(els.listRight, state.results.notFollowedBack,  0);
-    renderPagination(els.paginLeft,  state.results.notFollowingBack, "left");
-    renderPagination(els.paginRight, state.results.notFollowedBack,  "right");
+    renderColumn(els.listLeft, state.results.notFollowingBack, 0);
+    renderColumn(els.listRight, state.results.notFollowedBack, 0);
+    renderPagination(els.paginLeft, state.results.notFollowingBack, "left");
+    renderPagination(els.paginRight, state.results.notFollowedBack, "right");
   });
 }
 
@@ -405,17 +405,17 @@ function initActions() {
   els.errorReset?.addEventListener("click", resetApp);
 
   // Copy columns
-  els.btnCopyLeft?.addEventListener("click",  () => copyUsernames("left"));
+  els.btnCopyLeft?.addEventListener("click", () => copyUsernames("left"));
   els.btnCopyRight?.addEventListener("click", () => copyUsernames("right"));
 }
 
 function downloadCSV() {
   if (!state.results) return;
-  const csv  = Comparator.toCSV(state.results);
+  const csv = Comparator.toCSV(state.results);
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement("a");
-  a.href     = url;
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
   a.download = "followback-results.csv";
   a.click();
   URL.revokeObjectURL(url);
@@ -441,10 +441,10 @@ function copyUsernames(side) {
 
 function resetApp() {
   state = {
-    processing:  false,
-    results:     null,
-    pageLeft:    0,
-    pageRight:   0,
+    processing: false,
+    results: null,
+    pageLeft: 0,
+    pageRight: 0,
     searchQuery: "",
   };
 
@@ -453,11 +453,11 @@ function resetApp() {
   hideProcessing();
 
   els.uploadZone.classList.remove("file-selected", "processing", "error-state", "drag-over");
-  els.listLeft.innerHTML  = "";
+  els.listLeft.innerHTML = "";
   els.listRight.innerHTML = "";
   if (els.searchInput) els.searchInput.value = "";
-  if (els.paginLeft)   els.paginLeft.innerHTML = "";
-  if (els.paginRight)  els.paginRight.innerHTML = "";
+  if (els.paginLeft) els.paginLeft.innerHTML = "";
+  if (els.paginRight) els.paginRight.innerHTML = "";
 
   window.scrollTo({ top: 0, behavior: "smooth" });
   announce("Reset. Ready to analyze a new archive.");

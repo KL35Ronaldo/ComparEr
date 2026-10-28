@@ -17,7 +17,7 @@ import zipfile
 # Allow importing from backend/
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "backend"))
 
-from analyzer import (
+from backend.analyzer import (
     AnalyzerError,
     analyze_zip_bytes,
     compare_sets,
@@ -480,7 +480,7 @@ class TestZipSafetyLimits(unittest.TestCase):
 
     def test_too_many_entries_raises(self):
         """Archives exceeding MAX_ENTRIES must be rejected."""
-        import analyzer
+        import backend.analyzer as analyzer
         orig_max = analyzer.MAX_ENTRIES
         try:
             analyzer.MAX_ENTRIES = 5
@@ -496,7 +496,7 @@ class TestZipSafetyLimits(unittest.TestCase):
 
     def test_uncompressed_size_limit_raises(self):
         """Archives with uncompressed content exceeding MAX_UNCOMPRESSED must be rejected."""
-        import analyzer
+        import backend.analyzer as analyzer
         orig_max = analyzer.MAX_UNCOMPRESSED
         try:
             analyzer.MAX_UNCOMPRESSED = 50  # 50 bytes threshold for testing
@@ -519,7 +519,7 @@ class TestFlaskAPI(unittest.TestCase):
 
     def setUp(self):
         try:
-            from app import app
+            from backend.app import app
             app.config["TESTING"] = True
             self.client = app.test_client()
             self.flask_available = True

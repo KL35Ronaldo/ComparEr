@@ -8,15 +8,15 @@
 const Parser = (() => {
 
   // ── Constants ──────────────────────────────────────────────
-  const MAX_ZIP_BYTES        = 100 * 1024 * 1024; // 100 MB raw ZIP
-  const MAX_UNCOMPRESSED     = 500 * 1024 * 1024; // 500 MB uncompressed guard
-  const MAX_ENTRIES          = 10_000;
-  const INSTAGRAM_DOMAIN_RE  = /^https?:\/\/(www\.)?instagram\.com\//i;
+  const MAX_ZIP_BYTES = 100 * 1024 * 1024; // 100 MB raw ZIP
+  const MAX_UNCOMPRESSED = 500 * 1024 * 1024; // 500 MB uncompressed guard
+  const MAX_ENTRIES = 10_000;
+  const INSTAGRAM_DOMAIN_RE = /^https?:\/\/(www\.)?instagram\.com\//i;
 
   // Pattern: followers_1.json, followers_2.json … but NOT following_hashtags etc.
-  const FOLLOWERS_FILE_RE    = /(?:^|[\\/])followers(?:_\d+)?\.(?:json|html)$/i;
+  const FOLLOWERS_FILE_RE = /(?:^|[\\/])followers(?:_\d+)?\.(?:json|html)$/i;
   // following.json / following.html — must end exactly, no extras
-  const FOLLOWING_FILE_RE    = /(?:^|[\\/])following\.(?:json|html)$/i;
+  const FOLLOWING_FILE_RE = /(?:^|[\\/])following\.(?:json|html)$/i;
 
   // ── Normalize username ─────────────────────────────────────
   function normalizeUsername(raw) {

@@ -127,7 +127,7 @@ The frontend works by simply opening `index.html` in a browser. Because it uses 
 
 ```powershell
 # Windows PowerShell — just open the file
-Start-Process "e:\Documents\Python\Others\CompareEr\index.html"
+Start-Process "<your_directory>\CompareEr\index.html"
 ```
 
 Or drag `index.html` into your browser.
@@ -136,7 +136,7 @@ If you prefer a local dev server (optional, for consistent origin):
 
 ```powershell
 # Using Python's built-in server
-cd "e:\Documents\Python\Others\CompareEr"
+cd "<your_directory>\CompareEr"
 python -m http.server 8080
 # Open http://localhost:8080 in your browser
 ```
@@ -147,7 +147,7 @@ python -m http.server 8080
 
 ```powershell
 # 1. Create and activate a virtual environment
-cd "e:\Documents\Python\Others\CompareEr\backend"
+cd "<your_directory>\CompareEr\backend"
 python -m venv .venv
 .venv\Scripts\Activate.ps1
 
@@ -189,7 +189,7 @@ Leave `backendUrl` empty (`""`) to use browser-only mode (default and recommende
 1. Push the repository to GitHub.
 2. Go to **Settings** → **Pages** in your repository.
 3. Set source to **Deploy from a branch**, select `main`, folder `/` (root).
-4. Save. Your site will be available at `https://YOUR_USERNAME.github.io/followback/`.
+4. Save. Your site will be available at `https://<your_github_username>.github.io/CompareEr/`.
 
 > **Important:** GitHub Pages only serves static files. The Python backend does not run on GitHub Pages. Browser-only mode works perfectly with GitHub Pages.
 
@@ -267,18 +267,6 @@ Your export may use a format not yet supported. Try switching between JSON and H
 
 **Results seem wrong or empty**
 Check that your export includes the "Followers and following" section. Some export types only include posts, stories, or messages.
-
----
-
-## Developer Attribution
-
-The footer and `LICENSE` file contain the placeholder `YOUR_NAME_HERE`.
-
-To credit yourself:
-1. Replace `YOUR_NAME_HERE` in `index.html` (footer section).
-2. Replace `YOUR_USERNAME` with your GitHub username in `index.html` (footer links and `CONFIG.githubUrl` in `js/app.js`).
-3. Replace `YOUR_NAME_HERE` in `LICENSE`.
-4. Update the copyright year if needed.
 
 ---
 
