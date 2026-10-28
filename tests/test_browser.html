@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Followback — Browser Unit Tests</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0f0826;
+      color: #f0eaf8;
+      padding: 30px;
+      line-height: 1.6;
+    }
+    h1 {
+      background: linear-gradient(90deg, #c77dff, #ff6b9d, #fcb045);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    .summary {
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+      padding: 12px 18px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .test-suite {
+      margin-bottom: 24px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .suite-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #c77dff;
+      margin-bottom: 12px;
+    }
+    .test-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.9rem;
+    }
+    .test-row:last-child { border-bottom: none; }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .pass { background: rgba(46, 204, 113, 0.2); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.4); }
+    .fail { background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.4); }
+    .fail-msg { color: #e74c3c; font-size: 0.8rem; margin-left: 10px; }
+  </style>
+</head>
+<body>
+
+  <h1>Followback Browser Test Suite</h1>
+  <p style="color: rgba(240, 234, 248, 0.6); margin-bottom: 16px;">
+    Testing JSZip, Parser, and Comparator directly within the browser runtime.
+  </p>
+
+  <div id="summary" class="summary">Running tests…</div>
+  <div id="suites"></div>
+
+  <!-- Load dependencies and modules -->
+  <script src="../js/jszip.min.js"></script>
+  <script src="../js/parser.js"></script>
+  <script src="../js/comparator.js"></script>
+
+  <script>
+    const suitesEl = document.getElementById("suites");
+    const summaryEl = document.getElementById("summary");
+    let passed = 0;
+    let failed = 0;
+
+    function assert(condition, message) {
+      if (!condition) throw new Error(message || "Assertion failed");
+    }
+
+    function assertEqual(actual, expected, message) {
+      const a = JSON.stringify(actual);
+      const e = JSON.stringify(expected);
+      if (a !== e) {
+        throw new Error(`${message || "Assertion failed"}: expected ${e}, got ${a}`);
+      }
+    }
+
+    async function runSuite(title, tests) {
+      const suiteDiv = document.createElement("div");
+      suiteDiv.className = "test-suite";
+      const titleDiv = document.createElement("div");
+      titleDiv.className = "suite-title";
+      titleDiv.textContent = title;
+      suiteDiv.appendChild(titleDiv);
+
+      for (const [name, fn] of Object.entries(tests)) {
+        const row = document.createElement("div");
+        row.className = "test-row";
+        try {
+          await fn();
+          passed++;
+          row.innerHTML = `<span class="badge pass">PASS</span> <span>${name}</span>`;
+        } catch (err) {
+          failed++;
+          row.innerHTML = `<span class="badge fail">FAIL</span> <span>${name}</span> <span class="fail-msg">${err.message}</span>`;
+          console.error(`[FAIL] ${title} > ${name}:`, err);
+        }
+        suiteDiv.appendChild(row);
+      }
+      suitesEl.appendChild(suiteDiv);
+    }
+
+    (async function() {
+      // 1. Dependency checks
+      await runSuite("1. Dependency & Environment", {
+        "JSZip library is loaded and operational": () => {
+          assert(typeof JSZip !== "undefined", "JSZip must be defined");
+          const zip = new JSZip();
+          assert(typeof zip.file === "function", "JSZip instance must have .file method");
+        },
+        "Parser module is loaded": () => {
+          assert(typeof Parser !== "undefined", "Parser must be defined");
+          assert(typeof Parser.parseZip === "function", "Parser must have parseZip");
+          assert(typeof Parser.normalizeUsername === "function", "Parser must have normalizeUsername");
+        },
+        "Comparator module is loaded": () => {
+          assert(typeof Comparator !== "undefined", "Comparator must be defined");
+          assert(typeof Comparator.compare === "function", "Comparator must have compare");
+          assert(typeof Comparator.toCSV === "function", "Comparator must have toCSV");
+        }
+      });
+
+      // 2. Parser Username Normalization
+      await runSuite("2. Username Normalization", {
+        "Lowercases uppercase usernames": () => {
+          assertEqual(Parser.normalizeUsername("JohnDoe"), "johndoe");
+        },
+        "Strips leading @ symbol": () => {
+          assertEqual(Parser.normalizeUsername("@johndoe"), "johndoe");
+        },
+        "Trims whitespace": () => {
+          assertEqual(Parser.normalizeUsername("  johndoe  "), "johndoe");
+        },
+        "Accepts valid Instagram characters (letters, numbers, underscores, periods)": () => {
+          assertEqual(Parser.normalizeUsername("user.name_123"), "user.name_123");
+        },
+        "Rejects invalid characters (spaces, slashes, special symbols)": () => {
+          assertEqual(Parser.normalizeUsername("user name"), null);
+          assertEqual(Parser.normalizeUsername("user/name"), null);
+          assertEqual(Parser.normalizeUsername("user#name"), null);
+        },
+        "Rejects usernames longer than 30 characters": () => {
+          assertEqual(Parser.normalizeUsername("a".repeat(31)), null);
+        },
+        "Rejects non-string inputs": () => {
+          assertEqual(Parser.normalizeUsername(null), null);
+          assertEqual(Parser.normalizeUsername(12345), null);
+          assertEqual(Parser.normalizeUsername(undefined), null);
+        }
+      });
+
+      // 3. Set Comparator Logic
+      await runSuite("3. Core Set Comparison (Comparator.compare)", {
+        "Computes correct mathematical difference (G - F and F - G)": () => {
+          const followers = new Set(["alice", "charlie", "david"]);
+          const following = new Set(["alice", "bob", "charlie"]);
+          const res = Comparator.compare(followers, following);
+
+          assertEqual(res.notFollowingBack, ["bob"]);   // G - F
+          assertEqual(res.notFollowedBack, ["david"]);  // F - G
+          assertEqual(res.mutuals, 2);                  // alice, charlie
+          assertEqual(res.followers, 3);
+          assertEqual(res.following, 3);
+        },
+        "Excludes mutual follows from both non-mutual lists": () => {
+          const followers = new Set(["alice", "bob", "carol"]);
+          const following = new Set(["alice", "bob", "dave"]);
+          const res = Comparator.compare(followers, following);
+
+          assert(!res.notFollowingBack.includes("alice"), "alice should not be in notFollowingBack");
+          assert(!res.notFollowingBack.includes("bob"), "bob should not be in notFollowingBack");
+          assert(!res.notFollowedBack.includes("alice"), "alice should not be in notFollowedBack");
+          assert(!res.notFollowedBack.includes("bob"), "bob should not be in notFollowedBack");
+          assertEqual(res.mutuals, 2);
+        },
+        "Handles empty followers set": () => {
+          const res = Comparator.compare(new Set(), new Set(["alice", "bob"]));
+          assertEqual(res.followers, 0);
+          assertEqual(res.following, 2);
+          assertEqual(res.mutuals, 0);
+          assertEqual(res.notFollowingBack, ["alice", "bob"]);
+          assertEqual(res.notFollowedBack, []);
+        },
+        "Handles empty following set": () => {
+          const res = Comparator.compare(new Set(["alice", "bob"]), new Set());
+          assertEqual(res.followers, 2);
+          assertEqual(res.following, 0);
+          assertEqual(res.mutuals, 0);
+          assertEqual(res.notFollowingBack, []);
+          assertEqual(res.notFollowedBack, ["alice", "bob"]);
+        },
+        "Alphabetically sorts output usernames": () => {
+          const followers = new Set(["zack", "amy"]);
+          const following = new Set(["zack", "zoe", "brian"]);
+          const res = Comparator.compare(followers, following);
+          assertEqual(res.notFollowingBack, ["brian", "zoe"]);
+          assertEqual(res.notFollowedBack, ["amy"]);
+        }
+      });
+
+      // 4. CSV Export
+      await runSuite("4. CSV Export Formatting", {
+        "Produces valid CSV header and matching row counts": () => {
+          const results = {
+            notFollowingBack: ["bob", "eve"],
+            notFollowedBack: ["david"]
+          };
+          const csv = Comparator.toCSV(results);
+          const lines = csv.split("\r\n");
+          assertEqual(lines[0], '"Don\'t Follow You Back","You Don\'t Follow Back"');
+          assert(lines.length === 3, "Expected header + 2 data rows");
+        },
+        "Properly escapes commas and quotes in values": () => {
+          const results = {
+            notFollowingBack: ['comma,user', 'quote"user'],
+            notFollowedBack: []
+          };
+          const csv = Comparator.toCSV(results);
+          assert(csv.includes('"comma,user"'), "Commas must be quoted");
+          assert(csv.includes('"quote""user"'), "Quotes must be escaped with double quotes");
+        }
+      });
+
+      // 5. In-Memory Synthetic ZIP parsing
+      await runSuite("5. In-Memory ZIP Parsing (Parser.parseZip)", {
+        "Parses a valid synthetic JSON export ZIP in browser": async () => {
+          const zip = new JSZip();
+          const followersJson = JSON.stringify([
+            { string_list_data: [{ href: "https://www.instagram.com/alice/", value: "alice", timestamp: 1700000000 }] },
+            { string_list_data: [{ href: "https://www.instagram.com/charlie/", value: "charlie", timestamp: 1700000001 }] },
+            { string_list_data: [{ href: "https://www.instagram.com/david/", value: "david", timestamp: 1700000002 }] }
+          ]);
+          const followingJson = JSON.stringify({
+            relationships_following: [
+              { string_list_data: [{ href: "https://www.instagram.com/alice/", value: "alice", timestamp: 1700000010 }] },
+              { string_list_data: [{ href: "https://www.instagram.com/bob/", value: "bob", timestamp: 1700000011 }] },
+              { string_list_data: [{ href: "https://www.instagram.com/charlie/", value: "charlie", timestamp: 1700000012 }] }
+            ]
+          });
+
+          zip.file("connections/followers_and_following/followers_1.json", followersJson);
+          zip.file("connections/followers_and_following/following.json", followingJson);
+
+          const blob = await zip.generateAsync({ type: "blob" });
+          const file = new File([blob], "export.zip", { type: "application/zip" });
+
+          const statusMessages = [];
+          const { followersSet, followingSet } = await Parser.parseZip(file, msg => statusMessages.push(msg));
+
+          assert(followersSet.has("alice"), "followersSet should contain alice");
+          assert(followersSet.has("charlie"), "followersSet should contain charlie");
+          assert(followersSet.has("david"), "followersSet should contain david");
+          assert(followingSet.has("bob"), "followingSet should contain bob");
+
+          const compared = Comparator.compare(followersSet, followingSet);
+          assertEqual(compared.notFollowingBack, ["bob"]);
+          assertEqual(compared.notFollowedBack, ["david"]);
+          assertEqual(compared.mutuals, 2);
+        },
+        "Rejects files that are not valid ZIPs": async () => {
+          const blob = new Blob(["not a zip archive"], { type: "text/plain" });
+          const file = new File([blob], "fake.zip", { type: "application/zip" });
+
+          let threw = false;
+          try {
+            await Parser.parseZip(file, () => {});
+          } catch (err) {
+            threw = true;
+            assert(err.message.includes("ZIP"), "Error message should mention ZIP");
+          }
+          assert(threw, "Parser.parseZip should reject non-ZIP files");
+        }
+      });
+
+      // Update summary
+      summaryEl.innerHTML = `
+        <strong>Test Run Complete:</strong>
+        <span style="color: #2ecc71;">${passed} Passed</span>,
+        <span style="color: ${failed > 0 ? '#e74c3c' : 'inherit'};">${failed} Failed</span>
+        (Total: ${passed + failed})
+      `;
+    })();
+  </script>
+</body>
+</html>

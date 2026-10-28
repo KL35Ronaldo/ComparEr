@@ -1,0 +1,42 @@
+name: Static site check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-backend:
+    name: Python unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -r backend/requirements.txt
+
+      - name: Run tests
+        run: |
+          python -m pytest tests/ -v --tb=short
+
+  lint-frontend:
+    name: Check frontend files exist
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify key files present
+        run: |
+          test -f index.html
+          test -f css/styles.css
+          test -f js/app.js
+          test -f js/parser.js
+          test -f js/comparator.js
+          test -f js/jszip.min.js
+          echo "All required frontend files present."

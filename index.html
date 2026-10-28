@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Followback — Upload your Instagram data export and discover who follows you back. Private, browser-only analysis." />
+  <meta name="theme-color" content="#1a0533" />
+
+  <!-- Open Graph -->
+  <meta property="og:title"       content="Followback" />
+  <meta property="og:description" content="Your circle, a little clearer. Analyze your Instagram followers vs following privately in the browser." />
+  <meta property="og:type"        content="website" />
+
+  <title>Followback — Your circle, a little clearer.</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<!-- Atmospheric background -->
+<div class="bg-atmosphere" aria-hidden="true"></div>
+
+<!-- Screen-reader live region -->
+<div id="sr-live" class="sr-live" aria-live="polite" aria-atomic="true"></div>
+
+<!-- Toast notification -->
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<div class="page-wrap">
+
+  <!-- ═══════════════════════════════════════════════════════
+       HEADER
+  ═══════════════════════════════════════════════════════ -->
+  <header class="site-header" role="banner">
+    <a href="#" class="header-logo" aria-label="Followback — home">
+      <img src="assets/logo.svg" alt="Followback" height="30" />
+    </a>
+
+    <div class="header-privacy" aria-label="Privacy notice">
+      <img src="assets/icon-shield.svg" alt="" aria-hidden="true" />
+      <span>Your data stays yours</span>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════════
+       MAIN
+  ═══════════════════════════════════════════════════════ -->
+  <main id="main-content">
+
+    <!-- ── Hero ──────────────────────────────────────────── -->
+    <section class="hero" aria-labelledby="hero-heading">
+      <div class="hero-eyebrow" aria-hidden="true">
+        <span>✦</span> Instagram Followback Analyzer <span>✦</span>
+      </div>
+
+      <h1 id="hero-heading">Let's see who's keeping up.</h1>
+
+      <p class="hero-sub">
+        Upload your Instagram data export and discover who follows you back —
+        privately, right here in your browser.
+      </p>
+
+      <!-- Mode badge -->
+      <p id="mode-badge" style="font-size:0.75rem;color:var(--c-text-faint);margin-bottom:var(--sp-md);"
+         aria-live="polite">Local mode — data stays on your device</p>
+    </section>
+
+    <!-- ── Upload area ────────────────────────────────────── -->
+    <div class="upload-zone-wrap">
+      <div
+        id="upload-zone"
+        class="upload-zone"
+        role="button"
+        tabindex="0"
+        aria-label="Upload your Instagram data export ZIP file. Click or press Enter to open the file picker, or drag and drop a file here."
+        aria-describedby="upload-meta"
+      >
+        <div class="upload-icon-wrap" aria-hidden="true">
+          <img src="assets/icon-upload.svg" alt="" width="36" height="36" />
+        </div>
+
+        <h2>Drop your Instagram export here</h2>
+        <p>Or click to choose a file. We accept Instagram data export <strong>.zip</strong> archives.</p>
+
+        <button class="upload-btn" aria-hidden="true" tabindex="-1">
+          Choose ZIP file
+        </button>
+
+        <p id="upload-meta" class="upload-meta">
+          <span>.zip files only</span>
+          <span>Max 100 MB</span>
+          <span>JSON &amp; HTML formats</span>
+        </p>
+      </div>
+
+      <!-- Hidden file input -->
+      <input
+        type="file"
+        id="file-input"
+        accept=".zip,application/zip"
+        aria-label="Upload Instagram ZIP export"
+      />
+    </div>
+
+    <!-- ── Processing ─────────────────────────────────────── -->
+    <section id="processing-section" aria-live="polite" aria-busy="true" aria-label="Processing">
+      <div class="spinner-ring" aria-hidden="true"></div>
+      <p id="processing-msg" class="processing-msg">Opening your archive…</p>
+    </section>
+
+    <!-- ── Error ──────────────────────────────────────────── -->
+    <section id="error-section" aria-label="Error" aria-live="assertive">
+      <div class="error-card">
+        <div class="error-icon" aria-hidden="true">⚠️</div>
+        <div class="error-text">
+          <h3 id="error-heading">Something went wrong</h3>
+          <p id="error-body"></p>
+          <button id="error-reset" class="error-reset">Try again</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Instructions accordion ─────────────────────────── -->
+    <div class="instructions-wrap">
+      <button
+        id="instructions-toggle"
+        class="instructions-toggle"
+        aria-expanded="false"
+        aria-controls="instructions-body"
+      >
+        <span>📖 How to get your Instagram data export</span>
+        <svg class="instr-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <polyline points="4,6 8,10 12,6"/>
+        </svg>
+      </button>
+
+      <div id="instructions-body" class="instructions-body" role="region" aria-label="How to get your Instagram data export">
+        <ol class="instr-steps">
+          <li>Open Instagram and tap your <strong>Profile</strong>. Tap the menu icon (☰) at the top right.</li>
+          <li>Go to <strong>Accounts Center</strong> (sometimes under Settings &amp; Privacy).</li>
+          <li>Select <strong>Your information and permissions</strong>, then <strong>Download your information</strong>.</li>
+          <li>Choose your Instagram profile from the list.</li>
+          <li>Tap <strong>Select types of information</strong>, then choose <strong>Followers and following</strong>.</li>
+          <li>Choose <strong>JSON</strong> (preferred) or <strong>HTML</strong> as the file format, and set the date range to <em>All time</em>.</li>
+          <li>Tap <strong>Create files</strong>. Instagram will notify you (usually within a few minutes to a few hours) when the export is ready.</li>
+          <li>Download the export ZIP from the notification or from the same Download your information screen.</li>
+          <li>Upload the downloaded <code>.zip</code> file here — do <em>not</em> extract it first.</li>
+        </ol>
+        <p class="instr-note">
+          Instagram's interface labels and menu paths may vary by app version or platform.
+          If you can't find the options, visit the
+          <a href="https://help.instagram.com/181231772500920" target="_blank" rel="noopener noreferrer">official Instagram Help Center</a>
+          for guidance.
+        </p>
+      </div>
+    </div>
+
+    <!-- ── Results ────────────────────────────────────────── -->
+    <section id="results-section" aria-label="Analysis results">
+
+      <!-- Summary statistics -->
+      <div class="stats-grid" aria-label="Summary statistics">
+        <div class="stat-card">
+          <div id="stat-followers" class="stat-number" aria-label="Followers count">0</div>
+          <div class="stat-label">Followers</div>
+        </div>
+        <div class="stat-card">
+          <div id="stat-following" class="stat-number" aria-label="Following count">0</div>
+          <div class="stat-label">Following</div>
+        </div>
+        <div class="stat-card">
+          <div id="stat-mutuals" class="stat-number" aria-label="Mutual follows count">0</div>
+          <div class="stat-label">Mutuals</div>
+        </div>
+        <div class="stat-card highlight">
+          <div id="stat-not-back" class="stat-number" aria-label="Don't follow you back count">0</div>
+          <div class="stat-label">Don't Follow You Back</div>
+        </div>
+        <div class="stat-card highlight">
+          <div id="stat-not-followed" class="stat-number" aria-label="You don't follow back count">0</div>
+          <div class="stat-label">You Don't Follow Back</div>
+        </div>
+      </div>
+
+      <!-- Results panel -->
+      <div class="results-panel">
+        <div class="results-panel-header">
+          <h2>Comparison Results</h2>
+          <div class="search-wrap" role="search" aria-label="Filter results">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <circle cx="7" cy="7" r="4.5"/>
+              <line x1="10.5" y1="10.5" x2="14" y2="14"/>
+            </svg>
+            <input
+              type="search"
+              id="search-input"
+              placeholder="Filter accounts…"
+              autocomplete="off"
+              autocorrect="off"
+              spellcheck="false"
+              aria-label="Filter accounts in results"
+            />
+          </div>
+        </div>
+
+        <!-- Two-column layout -->
+        <div class="results-columns">
+
+          <!-- Left column: Don't Follow You Back (G − F) -->
+          <div class="results-col" aria-labelledby="col-left-title-el">
+            <div class="col-header">
+              <div class="col-title" id="col-left-title-el">
+                <span class="col-dot left" aria-hidden="true"></span>
+                <span id="col-left-title">Don't Follow You Back</span>
+                <span id="col-left-count" class="col-count" aria-live="polite">· 0</span>
+              </div>
+              <button id="btn-copy-left" class="col-copy-btn" aria-label="Copy usernames from 'Don't Follow You Back'">
+                <svg viewBox="0 0 14 14" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                  <rect x="4" y="4" width="8" height="8" rx="1.5"/>
+                  <path d="M2 10V2h8"/>
+                </svg>
+                Copy
+              </button>
+            </div>
+            <ul id="list-left" class="account-list" aria-label="Accounts that don't follow you back" aria-live="polite"></ul>
+            <p id="no-results-left" class="no-results-msg" aria-live="polite"></p>
+            <div id="pagin-left" class="col-pagination" role="navigation" aria-label="Pagination for Don't Follow You Back"></div>
+          </div>
+
+          <!-- Right column: You Don't Follow Back (F − G) -->
+          <div class="results-col" aria-labelledby="col-right-title-el">
+            <div class="col-header">
+              <div class="col-title" id="col-right-title-el">
+                <span class="col-dot right" aria-hidden="true"></span>
+                <span id="col-right-title">You Don't Follow Back</span>
+                <span id="col-right-count" class="col-count" aria-live="polite">· 0</span>
+              </div>
+              <button id="btn-copy-right" class="col-copy-btn" aria-label="Copy usernames from 'You Don't Follow Back'">
+                <svg viewBox="0 0 14 14" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                  <rect x="4" y="4" width="8" height="8" rx="1.5"/>
+                  <path d="M2 10V2h8"/>
+                </svg>
+                Copy
+              </button>
+            </div>
+            <ul id="list-right" class="account-list" aria-label="Accounts you don't follow back" aria-live="polite"></ul>
+            <p id="no-results-right" class="no-results-msg" aria-live="polite"></p>
+            <div id="pagin-right" class="col-pagination" role="navigation" aria-label="Pagination for You Don't Follow Back"></div>
+          </div>
+
+        </div><!-- .results-columns -->
+      </div><!-- .results-panel -->
+
+      <!-- Helpful note -->
+      <p class="results-note">
+        Some accounts may have changed their usernames, become private, or been deactivated or deleted since
+        this data was exported. These results reflect the information in your uploaded archive and may not
+        represent everyone's current account status.
+      </p>
+
+      <!-- Action bar -->
+      <div class="actions-bar" role="group" aria-label="Result actions">
+        <button id="btn-download" class="action-btn primary">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="8" y1="2" x2="8" y2="11"/>
+            <polyline points="5,8 8,11 11,8"/>
+            <line x1="3" y1="14" x2="13" y2="14"/>
+          </svg>
+          Download CSV
+        </button>
+
+        <button id="btn-reset" class="action-btn">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M2.5 8a5.5 5.5 0 1 1 1.2 3.4"/>
+            <polyline points="1,5.5 2.5,8 5,6.5"/>
+          </svg>
+          Analyze Another ZIP
+        </button>
+      </div>
+
+    </section><!-- #results-section -->
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════════════ -->
+  <footer class="site-footer" role="contentinfo">
+    <p class="footer-made">
+      Made with care by
+      <a href="https://github.com/YOUR_USERNAME" target="_blank" rel="noopener noreferrer">YOUR_NAME_HERE</a>.
+    </p>
+    <nav class="footer-links" aria-label="Footer links">
+      <a href="https://github.com/YOUR_USERNAME/followback" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="https://github.com/YOUR_USERNAME/followback/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a>
+      <a href="https://github.com/YOUR_USERNAME/followback/blob/main/SECURITY.md" target="_blank" rel="noopener noreferrer">Security</a>
+    </nav>
+    <p class="footer-privacy">
+      Your data is processed entirely in your browser and is never uploaded to any server.
+      No accounts, no tracking, no ads. Copyright &copy; 2026 YOUR_NAME_HERE.
+    </p>
+  </footer>
+
+</div><!-- .page-wrap -->
+
+<!-- ── Vendored ZIP library (local, no CDN dependency) ──── -->
+<script src="js/jszip.min.js"></script>
+<!-- ── Application modules ─────────────────────────────── -->
+<script src="js/parser.js"></script>
+<script src="js/comparator.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
